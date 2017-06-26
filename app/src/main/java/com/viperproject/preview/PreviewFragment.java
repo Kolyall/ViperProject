@@ -9,9 +9,9 @@ import android.widget.TextView;
 import com.hannesdorfmann.fragmentargs.annotation.Arg;
 import com.hannesdorfmann.fragmentargs.annotation.FragmentWithArgs;
 import com.viperproject.R;
+import com.viperproject.common.BaseFragment;
 import com.viperproject.common.Layout;
-import com.viperproject.common.MvprFragment;
-import com.viperproject.main.MainRouter;
+import com.viperproject.main.router.MessagesRouter;
 
 import butterknife.BindView;
 
@@ -20,7 +20,7 @@ import butterknife.BindView;
  */
 @FragmentWithArgs
 @Layout(id = R.layout.fragment_preview)
-public class PreviewFragment extends MvprFragment<PreviewView, PreviewPresenter, MainRouter> implements PreviewView {
+public class PreviewFragment extends BaseFragment<PreviewView, PreviewPresenter, MessagesRouter> implements PreviewView {
 
     @Arg String title;
 

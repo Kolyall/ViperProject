@@ -1,16 +1,34 @@
 apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
 
+def gitBranch = 'git rev-parse --abbrev-ref HEAD'.execute().text.trim()
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.0"
+    def globalConfiguration = rootProject.extensions.getByName("ext")
+    compileSdkVersion globalConfiguration.getAt("androidCompileSdkVersion")
+    buildToolsVersion globalConfiguration.getAt("androidBuildToolsVersion")
+
     defaultConfig {
         applicationId "com.viperproject"
-        minSdkVersion 19
-        targetSdkVersion 26
+        minSdkVersion globalConfiguration.getAt("androidMinSdkVersion")
+        targetSdkVersion globalConfiguration.getAt("androidTargetSdkVersion")
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    lintOptions {
+        quiet true
+        abortOnError false
+        ignoreWarnings true
+        disable 'InvalidPackage'           //Some libraries have issues with this.
+        disable 'OldTargetApi'             //Lint gives this warning but SDK 20 would be Android L Beta.
+        disable 'IconDensities'            //For testing purpose. This is safe to remove.
+        disable 'IconMissingDensityFolder' //For testing purpose. This is safe to remove.
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -19,17 +37,105 @@ android {
     }
 }
 
+android.applicationVariants.all { variant ->
+    variant.outputs.each { output ->
+        def suffix = ""
+        def branch = ""
+        def flavor = ""
+        if (gitBranch != "master" && gitBranch != "HEAD") {
+            branch += "-${gitBranch}"
+        }
+        if (variant.productFlavors.applicationIdSuffix) {
+            suffix += "${variant.productFlavors.applicationIdSuffix}".replaceAll("\\[","").replaceAll("]","");
+            if (suffix==null || suffix=="null")
+                suffix = "";
+        }
+        if (variant.productFlavors.name) {
+            flavor += "-${variant.productFlavors.name}".replaceAll("\\[","").replaceAll("]","");
+            if (flavor==null)
+                flavor = "";
+        }
+        def newName = "${android.defaultConfig.applicationId}${suffix}-v${android.defaultConfig.versionName}-vc${android.defaultConfig.versionCode}${flavor}-${variant.buildType.name}${branch}"
+
+        //noinspection GroovyAssignabilityCheck
+        output.outputFile = new File(output.outputFile.parentFile, newName + ".apk")
+        print "APK Name: ${output.outputFile}"
+    }
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
-    compile 'com.android.support:appcompat-v7:26.+'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-
+    //Base libs
     compile 'com.hannesdorfmann.mosby3:mvp:3.0.4'
     compile 'com.hannesdorfmann.mosby3:mvp-nullobject-presenter:3.0.4'
-    compile 'com.hannesdorfmann.fragmentargs:annotation:3.0.2'
-    annotationProcessor 'com.hannesdorfmann.fragmentargs:processor:3.0.2'
 
-    compile 'com.jakewharton:butterknife:8.6.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
+    def presentationDependencies = rootProject.ext.presentationDependencies
+    def commonDependencies = rootProject.ext.commonDependencies
+    def dataDependencies = rootProject.ext.dataDependencies
+
+    compile "com.android.support:design:${rootProject.ext.supportLibVer}"
+
+    compile "com.android.support:appcompat-v7:${rootProject.ext.supportLibVer}"
+    compile "com.android.support:support-v4:${rootProject.ext.supportLibVer}"
+    compile "com.android.support:gridlayout-v7:${rootProject.ext.supportLibVer}"
+    compile "com.android.support:cardview-v7:${rootProject.ext.supportLibVer}"
+    compile "com.android.support:recyclerview-v7:${rootProject.ext.supportLibVer}"
+
+    // rxjava
+    compile presentationDependencies.rxJava
+    compile presentationDependencies.rxAndroid
+    compile dataDependencies.rxExtras
+
+    // square
+    compile dataDependencies.retrofit
+    compile dataDependencies.retrofitGsonConverter
+    compile dataDependencies.retrofitRxjavaAdapter
+    compile dataDependencies.retrofitPhrase
+
+    compile dataDependencies.okHttp
+    compile dataDependencies.okHttpLogging
+    compile dataDependencies.okHttpUrlConnection
+
+    // picasso
+    compile presentationDependencies.picasso
+    compile 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0'
+
+    // dagger
+    compile presentationDependencies.dagger
+    annotationProcessor dataDependencies.daggerCompiler
+    compile dataDependencies.javaxAnnotation
+    compile dataDependencies.javaxInject
+    compile dataDependencies.jsr305
+
+    // jake ftw
+    compile presentationDependencies.butterKnife
+    annotationProcessor presentationDependencies.butterKnifeCompiler
+
+    provided commonDependencies.lombok
+    annotationProcessor commonDependencies.lombok
+
+    // FragmentWithArgs
+    compile presentationDependencies.fragmentargs
+    annotationProcessor presentationDependencies.fragmentargsCompiler
+
+    compile dataDependencies.parceler
+    annotationProcessor dataDependencies.parcelerCompiler
+    compile 'com.hannesdorfmann.fragmentargs:bundler-parceler:2.1.2'
+
+    compile 'com.android.support:multidex:1.0.1'
+
+    // intent builder
+    compile presentationDependencies.activitystarter
+    annotationProcessor presentationDependencies.activitystarterCompiler
+
+    compile 'org.greenrobot:eventbus:3.0.0'
+
+    compile 'com.jakewharton.rxbinding:rxbinding:1.0.1'
+
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'//constraint-layout
+
+    //UI Libs
+    //font
+    compile 'uk.co.chrisjenx:calligraphy:2.2.0'
 }

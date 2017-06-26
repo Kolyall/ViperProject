@@ -18,7 +18,7 @@ public abstract class MvprPresenter<V extends MvpView, R extends MvprRouter> ext
         this.router = router;
     }
 
-    public abstract void onStart();
+    public void onStart() {}
 
-    public abstract void onStop();
+    public void onStop() {}
 }

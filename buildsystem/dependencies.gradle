@@ -1,0 +1,91 @@
+allprojects {
+    repositories {
+        jcenter()
+        mavenCentral()
+        maven { url "https://jitpack.io" }
+        maven { url 'https://maven.fabric.io/public' }
+        maven { url "https://maven.google.com" }
+    }
+}
+
+ext {
+    //Android
+    androidBuildToolsVersion = "26.0.0"
+    androidMinSdkVersion = 19
+    androidTargetSdkVersion = 23
+    androidCompileSdkVersion = 25
+
+    //Libraries
+    daggerVersion = '2.10'
+    butterKnifeVersion = '8.6.0'
+    supportLibVer = '25.4.0'
+    recyclerViewVersion = supportLibVer
+
+    rxJavaVersion = '1.2.9'
+    rxAndroidVersion = '1.2.1'
+    rxExtrasVersion = '0.8.0.6'
+    javaxAnnotationVersion = '1.0'
+    javaxInjectVersion = '1'
+    retrofitVersion = '2.1.0'
+    phraseVersion = '1.1.0'
+    okHttpVersion = '3.6.0'
+    androidAnnotationsVersion = supportLibVer
+    //Views
+    //Data
+    lombokVersion = '1.16.16'
+    parcelerVersion = '1.1.8'
+    fragmentargsVersion = '3.0.2'
+    activitystarterVersion = '0.50'
+    picassoVersion = '2.5.2'
+    jsr305           = '3.0.2'
+
+    gsonVersion = '2.7'
+
+    commonDependencies = [
+            lombok:     "org.projectlombok:lombok:${lombokVersion}"
+    ]
+    presentationDependencies = [
+            activitystarter:             "com.github.marcinmoskala.activitystarter:activitystarter:${activitystarterVersion}",
+            activitystarterCompiler:             "com.github.marcinmoskala.activitystarter:activitystarter-compiler:${activitystarterVersion}",
+
+            fragmentargs:             "com.hannesdorfmann.fragmentargs:annotation:${fragmentargsVersion}",
+            fragmentargsCompiler:             "com.hannesdorfmann.fragmentargs:processor:${fragmentargsVersion}",
+            dagger:             "com.google.dagger:dagger:${daggerVersion}",
+            butterKnife:        "com.jakewharton:butterknife:${butterKnifeVersion}",
+            butterKnifeCompiler:"com.jakewharton:butterknife-compiler:${butterKnifeVersion}",
+            recyclerView:       "com.android.support:recyclerview-v7:${recyclerViewVersion}",
+            rxJava:             "io.reactivex:rxjava:${rxJavaVersion}",
+            rxAndroid:          "io.reactivex:rxandroid:${rxAndroidVersion}",
+            rxExtras:              "com.github.davidmoten:rxjava-extras:${rxExtrasVersion}",
+            javaxAnnotation:    "javax.annotation:jsr250-api:${javaxAnnotationVersion}",
+            picasso:    "com.squareup.picasso:picasso:${picassoVersion}"
+    ]
+
+    dataDependencies = [
+            daggerCompiler:        "com.google.dagger:dagger-compiler:${daggerVersion}",
+            parceler:              "org.parceler:parceler-api:${parcelerVersion}",
+            parcelerCompiler:      "org.parceler:parceler:${parcelerVersion}",
+            dagger:                "com.google.dagger:dagger:${daggerVersion}",
+            retrofit:              "com.squareup.retrofit2:retrofit:${retrofitVersion}",
+            retrofitGsonConverter: "com.squareup.retrofit2:converter-gson:${retrofitVersion}",
+            retrofitRxjavaAdapter: "com.squareup.retrofit2:adapter-rxjava:${retrofitVersion}",
+            retrofitPhrase:        "com.squareup.phrase:phrase:${phraseVersion}",
+            okHttp:                "com.squareup.okhttp3:okhttp:${okHttpVersion}",
+            okHttpLogging:         "com.squareup.okhttp3:okhttp-urlconnection:${okHttpVersion}",
+            okHttpUrlConnection:   "com.squareup.okhttp3:logging-interceptor:${okHttpVersion}",
+            gson:                  "com.google.code.gson:gson:${gsonVersion}",
+            rxJava:                "io.reactivex:rxjava:${rxJavaVersion}",
+            rxAndroid:             "io.reactivex:rxandroid:${rxAndroidVersion}",
+            rxExtras:              "com.github.davidmoten:rxjava-extras:${rxExtrasVersion}",
+            javaxAnnotation:       "javax.annotation:jsr250-api:${javaxAnnotationVersion}",
+            javaxInject:           "javax.inject:javax.inject:${javaxInjectVersion}",
+            jsr305          : "com.google.code.findbugs:jsr305:${jsr305}",
+            androidAnnotations:    "com.android.support:support-annotations:${androidAnnotationsVersion}"
+    ]
+
+    domainDependencies = [
+            javaxAnnotation:    "javax.annotation:jsr250-api:${javaxAnnotationVersion}",
+            javaxInject:        "javax.inject:javax.inject:${javaxInjectVersion}",
+            rxJava:             "io.reactivex:rxjava:${rxJavaVersion}"
+    ]
+}
